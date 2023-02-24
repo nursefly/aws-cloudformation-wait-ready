@@ -1,5 +1,10 @@
 # `aws-cloudformation-wait-ready`
 
+![](https://img.shields.io/npm/v/@vivianhealth/aws-cloudformation-wait-ready)
+![](https://img.shields.io/github/package-json/v/nursefly/aws-cloudformation-wait-ready)
+![](https://img.shields.io/node/v/@vivianhealth/aws-cloudformation-wait-ready)
+![](https://img.shields.io/npm/types/@vivianhealth/aws-cloudformation-wait-ready)
+
 A fork of [`CumulusDS/aws-cloudformation-wait-ready`](https://github.com/CumulusDS/aws-cloudformation-wait-ready)
 written in typescript and updated for Node 18.
 
