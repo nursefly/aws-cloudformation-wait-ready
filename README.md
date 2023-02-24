@@ -44,6 +44,14 @@ npx aws-cloudformation-wait-ready \
     --stack-name <stack-name>
 ```
 
+## Publishing
+
+This package is automatically published to npm via CI. Versions are bumped automatically based on commits
+since the last release using `semantic-release` and `conventional-changelog`.
+
+Commit message format is important. See [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
+This format is enforced via git hooks.
+
 ## License
 
 This package is [MIT licensed](LICENSE).

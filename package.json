@@ -37,6 +37,8 @@
     "commander": "^10.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
     "@semantic-release/git": "^10.0.1",
     "@types/node": "18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
