@@ -1,0 +1,6 @@
+# Ignore build output
+dist/
+*.d.ts
+
+# Ignore deps
+node_modules

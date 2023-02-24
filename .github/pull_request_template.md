@@ -1,18 +1,7 @@
-## Summary
-What does this PR do?
+# Description
 
-## Dependencies
-- [Name of the change](https://link-to-PR-or-commit)
+<!-- Add a description of the changes in this PR and why they're necessary -->
 
-## Changes
-### Interface 
-- Is there a change to the package's interface?
+# Proof of Functionality
 
-### Developer
-- What are the other changes that are not directly visible to the user ?
-
-## Details
-Why did you make this change? What does it affect?
-
-## Testing
-How can the other reviewers check that your change works?
+<!-- If tests were added, you may skip this. Otherwise, provide screenshots or console output. -->

@@ -1,28 +1,46 @@
-# AWS CloudFormation Wait Ready
+# `aws-cloudformation-wait-ready`
 
-This utility waits until an AWS CloudFormation Stack is ready to update. It is similar to `aws cloudformation wait stack-update-complete` but waits for any stack status where an update should be allowed. A feature request for a similar feature from the [aws cli](https://github.com/aws/aws-cli/issues/2887) has been filed, but not implemented. The feature is useful for CI scripts that test deployment.
+A fork of [`CumulusDS/aws-cloudformation-wait-ready`](https://github.com/CumulusDS/aws-cloudformation-wait-ready)
+written in typescript and updated for Node 18.
 
-This package is meant to be used as a command-line tool.
+This utility waits until an AWS CloudFormation Stack is ready to update.
+It is similar to `aws cloudformation wait stack-update-complete` but waits
+for any stack status where an update should be allowed. A feature request
+for a similar feature from the [aws cli](https://github.com/aws/aws-cli/issues/2887)
+has been filed, but not implemented. The feature is useful for CI scripts
+that test deployment readiness.
 
-To install it in your project:
+## Prerequisites
 
+- Node >=18
+- [AWS auth via environment variables or instance profile](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/setting-credentials-node.html)
+
+## Usage
+
+The following command will allow you run the CLI tool without having to explicitly
+install it as long as `npm` is installed.
+
+```bash
+npx -y -p @vivianhealth/aws-cloudformation-wait-ready@latest \
+    aws-cloudformation-wait-ready \
+    --stack-name <stack-name>
 ```
-yarn add --dev @cumulusds/aws-cloudformation-wait-ready
+
+To install and lock in a specific version into your project dependencies (recommended):
+
+```bash
+npm install --save-dev @vivianhealth/aws-cloudformation-wait-ready
 ```
 
-To use it:
+And then to run the CLI tool inside your project directory:
 
+```bash
+npx aws-cloudformation-wait-ready \
+    --stack-name <stack-name>
 ```
-yarn aws-cloudformation-wait-ready --region us-east-1 --stack-name MyStackName
-```
-
-# Development
-
-- [Package Structure](doc/development.md#package-structure)
-- [Development Environment](doc/development.md#development-environment)
-- [Quality](doc/development.md#quality)
-- [Release](doc/development.md#release)
 
 ## License
 
 This package is [MIT licensed](LICENSE).
+
+It was originally forked from [`CumulusDS/aws-cloudformation-wait-ready`](https://github.com/CumulusDS/aws-cloudformation-wait-ready)
