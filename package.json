@@ -65,10 +65,6 @@
         "@semantic-release/git",
         {
           "assets": [
-            "dist",
-            "bin",
-            "LICENSE",
-            "README.md",
             "package.json",
             "package-lock.json"
           ],
