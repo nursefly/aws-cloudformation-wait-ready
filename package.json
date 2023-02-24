@@ -51,5 +51,10 @@
   "lint-staged": {
     "*.{js,ts,json,md}": "prettier --write",
     "*.{js,ts}": "eslint --fix"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   }
 }
