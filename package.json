@@ -5,6 +5,9 @@
   "repository": "https://github.com/nursefly/aws-cloudformation-wait-ready",
   "author": "Vivian Health",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18"
   },
