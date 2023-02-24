@@ -1,0 +1,31 @@
+name: Verify and Maybe Release
+
+on: push
+
+jobs:
+  verify-and-maybe-release:
+    name: Verify and Maybe Release
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Config git user
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+      - name: Install deps
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Bump versions and release if on main
+        if: github.ref == 'refs/heads/main'
+        run: npx semantic-release
