@@ -1,6 +1,6 @@
 {
   "name": "@vivianhealth/aws-cloudformation-wait-ready",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Wait for a CloudFormation stack to be ready for the next deploy",
   "repository": "https://github.com/nursefly/aws-cloudformation-wait-ready",
   "author": "Vivian Health",
