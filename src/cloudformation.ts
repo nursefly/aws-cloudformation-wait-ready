@@ -1,7 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { CloudFormation, Stack, StackEvent } from '@aws-sdk/client-cloudformation';
 import { sleep } from './async.js';
-import { logInfo, logSuccess } from './log.js';
+import {
+  logError,
+  LogFn,
+  logInfo,
+  logSuccess,
+  logSuccessWithTimestamp,
+  logWithTimestamp,
+} from './log.js';
 
 export function createCloudFormationClient({ region }: { region: string }) {
   return new CloudFormation({ region });
@@ -12,6 +19,30 @@ function isCloudFormationStatusReadyForUpdate(status: string) {
     status.endsWith('_FAILED') ||
     status.endsWith('_ROLLBACK_COMPLETE') ||
     status.endsWith('_COMPLETE')
+  );
+}
+
+function logEvent(event: StackEvent) {
+  const {
+    ResourceStatus: status = 'Unknown Status',
+    ResourceStatusReason: reason = null,
+    LogicalResourceId: logicalResourceId = 'Unknown Logical ID',
+    ResourceType: resourceType = 'Unknown Type',
+    Timestamp: timestamp,
+  } = event;
+  const reasonSuffix = reason ? ` (${reason})` : '';
+  let logFunction: LogFn;
+  if (status.endsWith('_FAILED')) {
+    logFunction = logError;
+  } else if (status.endsWith('_COMPLETE')) {
+    logFunction = logSuccess;
+  } else {
+    logFunction = logInfo;
+  }
+  logWithTimestamp(
+    [`${status}${reasonSuffix}`, `${logicalResourceId} (${resourceType})`],
+    logFunction,
+    timestamp,
   );
 }
 
@@ -40,20 +71,20 @@ export async function waitForStackToBeReadyForUpdate({
     [stack] = stacks;
   } catch (error) {
     if ((error as { Code: string }).Code === 'ValidationError') {
-      logInfo('Stack does not exist. Safe to create.');
+      logSuccessWithTimestamp('Stack does not exist. Safe to create.');
       return;
     }
     throw error;
   }
   if (!stack) {
-    logSuccess('Stack does not exist. Safe to create.');
+    logSuccessWithTimestamp('Stack does not exist. Safe to create.');
   }
   const { StackStatus: stackStatus } = stack;
   if (!stackStatus) {
     throw new Error('StackStatus is undefined');
   }
   if (isCloudFormationStatusReadyForUpdate(stackStatus)) {
-    logSuccess('Stack is ready for update.');
+    logSuccessWithTimestamp('Stack is ready for update.');
     return;
   }
 
@@ -61,16 +92,19 @@ export async function waitForStackToBeReadyForUpdate({
   let latestStatus = '';
 
   do {
-    const events = await describeStackEventsSince(latestEventId);
+    let events: StackEvent[] = [];
+    try {
+      events = await describeStackEventsSince(latestEventId);
+    } catch (error) {
+      if ((error as { Code: string }).Code === 'ValidationError') {
+        logSuccessWithTimestamp('Stack no longer exists (e.g. was deleted). Safe to create.');
+        return;
+      }
+      throw error;
+    }
     for (const event of events) {
-      const { EventId: eventId, ResourceStatusReason: reason, ResourceStatus: status } = event;
-      const logPrefix = `[${event.Timestamp?.toISOString() || '(no timestamp)'}]`;
-      if (status) {
-        logInfo(`${logPrefix} Status: ${status}`);
-      }
-      if (reason) {
-        logInfo(`${logPrefix} Reason: ${reason}`);
-      }
+      const { EventId: eventId, ResourceStatus: status } = event;
+      logEvent(event);
       if (status && isStackEventForThisStack(event)) {
         latestStatus = status;
       }
@@ -80,10 +114,10 @@ export async function waitForStackToBeReadyForUpdate({
     }
 
     if (!isCloudFormationStatusReadyForUpdate(latestStatus)) {
-      logInfo('Stack not yet ready. Waiting 10 seconds...');
+      logWithTimestamp('Stack not yet ready. Waiting 10 seconds...');
       await sleep(10000);
     }
   } while (!isCloudFormationStatusReadyForUpdate(latestStatus));
 
-  logSuccess('Stack is ready for update.');
+  logSuccessWithTimestamp('Stack is ready for update.');
 }
